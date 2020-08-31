@@ -11,13 +11,19 @@ namespace FOS_Test
         private bool status;
 
         public void TurnOn()
-        { }
+        {
+            status = false;
+        }
 
         public void TurnOff()
-        { }
+        {
+            status = false;
+        }
 
         public bool IsSirenOn()
-        { }
+        {
+            return status;
+        }
 
     }
 }
