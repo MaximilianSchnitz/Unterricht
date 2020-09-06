@@ -10,6 +10,10 @@ namespace FOS_Test
     {
         static void Main(string[] args)
         {
+            var ss = new SecuritySystem();
+            ss.CheckDoors();
+
+            Console.ReadKey();
         }
     }
 }

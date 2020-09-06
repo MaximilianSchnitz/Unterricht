@@ -18,11 +18,6 @@ namespace FOS_Test
             alarm = new Alarm();
             display = new Display();
 
-            int doorLength = 15;
-
-            for (int i = 0; i < doorLength; i++)
-                doors[i] = new Door(i);
-
             if (display.GetFontSize() != 30)
                 display.SetFontSize(30);
         }
@@ -35,7 +30,7 @@ namespace FOS_Test
         public void ActivateFireAlarm()
         {
             alarm.TurnOn();
-
+            
             foreach (var d in doors)
                 d.UnlockDoor();
         }
@@ -47,13 +42,14 @@ namespace FOS_Test
                 if(d.IsLocked())
                     lockedDoors.Add(d);
 
-            String s = "Die Tore sind verriegelt ";
+            String s = "Die Tore sind verriegelt: ";
 
-            String[] array = new String[lockedDoors.Count];
+            var array = new String[lockedDoors.Count];
             for (int i = 0; i < array.Length; i++)
                 array[i] = lockedDoors[i].GetRoomNumber().ToString();
 
-
+            s += String.Join(",", array);
+            Console.WriteLine(s);
         }
 
     }
