@@ -8,9 +8,9 @@ namespace FOS_Test
 {
     class Door
     {
+        private bool locked;
 
         private int roomNumber;
-        private bool locked;
 
         public Door(int roomNumber)
         {
