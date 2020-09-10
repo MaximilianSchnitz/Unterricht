@@ -21,7 +21,7 @@ namespace UML_Bibliothek
 
         public string PruefeAktualitaet()
         {
-            int diff = (int)(DateTime.Now - Erscheinungsjahr).TotalDays / 365;
+            int diff = DateTime.Now.Year - Erscheinungsjahr.Year;
             if (diff > 10)
                 return "nicht aktuell";
             else if (diff >= 2)

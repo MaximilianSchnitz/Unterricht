@@ -23,7 +23,7 @@ namespace UML_Bibliothek
 
         public bool PruefeAltersfreigabe(Ausleiher ausleiher)
         {
-            return (DateTime.Now - ausleiher.Geburtsdatum).TotalDays / 365 >= altersfreigabe;
+            return DateTime.Now.Year - ausleiher.Geburtsdatum.Year >= altersfreigabe;
         }
 
         public override void Ausleihen(Ausleiher ausleiher)
