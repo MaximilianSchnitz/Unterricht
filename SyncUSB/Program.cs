@@ -10,18 +10,37 @@ namespace SyncUSB
     class Program
     {
 
-        static string PATH;
+        const string LOCAL_PATH = "C:/Users/felix/Desktop";
+        const string REMOTE_PATH = "E:/Test";
 
-        static List<string> files;
-        static List<string> folders;
+        static List<string> filesLocal;
+        static List<string> foldersLocal;
+
+        static List<string> filesRemote;
+        static List<string> foldersRemote;
 
         static void Main(string[] args)
         {
+            /**
             var stringBuilder = new StringBuilder();
             foreach (var arg in args)
                 stringBuilder.Append(arg);
             PATH = stringBuilder.ToString().Replace("\"", String.Empty);
+            */
 
+            //foldersLocal = GetFolders(LOCAL_PATH);
+            //filesLocal = GetFiles(LOCAL_PATH);
+
+            //foldersRemote = GetFolders(REMOTE_PATH);
+            //filesRemote = GetFiles(REMOTE_PATH);
+
+            filesLocal = GetFiles(LOCAL_PATH, LOCAL_PATH.Length);
+            filesRemote = GetFiles(REMOTE_PATH, REMOTE_PATH.Length);
+
+            foldersLocal = GetFolders(LOCAL_PATH, LOCAL_PATH.Length);
+            foldersRemote = GetFolders(REMOTE_PATH, REMOTE_PATH.Length);
+
+            Sync();
 
 
             Console.ReadKey();
@@ -29,12 +48,24 @@ namespace SyncUSB
 
         
 
-        static void Sync(string path1, string path2)
+        static void Sync()
         {
             
+            foreach(var f in filesLocal)
+            {
+                var file = new FileInfo(f);
+                
+                if(!filesRemote.Contains(f))
+                {
+                    new DirectoryInfo(MakeAbsolute(new FileInfo(f).DirectoryName, REMOTE_PATH)).Create();
+                    file.CopyTo(MakeAbsolute(f, REMOTE_PATH));
+                }
+            }
         }
 
-        static List<string> GetFiles(string path)
+
+
+        static List<string> GetFiles_(string path, string prefix)
         {
             var list = new List<string>();
 
@@ -43,46 +74,69 @@ namespace SyncUSB
                 if (!File.Exists(file) || !HasFileAccess(path))
                     continue;
 
-                list.Add(MakeRelative(file));
+                list.Add(MakeRelative(file, prefix.Length));
             }
-            foreach(var folder in folders)
+            foreach(var folder in foldersLocal)
             {
-                foreach(var file in Directory.GetFiles(MakeAbsolute(folder)))
+                foreach(var file in Directory.GetFiles(MakeAbsolute(folder, prefix)))
                 {
                     if (!File.Exists(file) || !HasFileAccess(path))
                         continue;
 
-                    list.Add(MakeRelative(file));
+                    list.Add(MakeRelative(file, prefix.Length));
                 }
             }
             
             return list;
         }
 
-        static List<string> GetFolders(string path)
+        static List<string> GetFiles(string path, int prefixLength)
         {
             var list = new List<string>();
 
             if (!Directory.Exists(path) || !HasDirectoryAccess(path))
-                return null;
+                return list;
+
+            foreach(var f in Directory.GetFiles(path))
+            {
+                if (!File.Exists(f) || !HasFileAccess(path))
+                    continue;
+
+                list.Add(MakeRelative(f, prefixLength));
+            }
 
             foreach(var dir in Directory.GetDirectories(path))
             {
-                list.Add(MakeRelative(dir));
-                list.AddRange(GetFolders(dir));
+                list.AddRange(GetFiles(dir, prefixLength));
             }
 
             return list;
         }
 
-        static string MakeRelative(string path)
+        static List<string> GetFolders(string path, int prefixLength)
         {
-            return path.Substring(PATH.Length);
+            var list = new List<string>();
+
+            if (!Directory.Exists(path) || !HasDirectoryAccess(path))
+                return list;
+
+            foreach(var dir in Directory.GetDirectories(path))
+            {
+                list.Add(MakeRelative(dir, prefixLength));
+                list.AddRange(GetFolders(dir, prefixLength));
+            }
+
+            return list;
         }
 
-        static string MakeAbsolute(string path)
+        static string MakeRelative(string path, int prefixLength)
         {
-            return PATH + path;
+            return path.Substring(prefixLength);
+        }
+
+        static string MakeAbsolute(string path, string prefix)
+        {
+            return prefix + ((prefix[prefix.Length - 1] == '/' || prefix[prefix.Length - 1] == '\\') ? "" : Path.DirectorySeparatorChar.ToString()) + path;
         }
 
         static bool HasFileAccess(string path)
