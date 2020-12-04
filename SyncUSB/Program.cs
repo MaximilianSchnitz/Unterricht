@@ -40,26 +40,22 @@ namespace SyncUSB
             foldersLocal = GetFolders(LOCAL_PATH, LOCAL_PATH.Length);
             foldersRemote = GetFolders(REMOTE_PATH, REMOTE_PATH.Length);
 
-            Sync();
-
 
             Console.ReadKey();
         }
 
         
 
-        static void Sync()
+        static List<string> GetChangedFiles(List<string> localFiles, List<string> remoteFiles)
         {
-            
-            foreach(var f in filesLocal)
+            var changeList = new List<Entry>();
+
+            int min = Math.Min(localFiles.Count, remoteFiles.Count);
+            int max = Math.Max(localFiles.Count, remoteFiles.Count);
+
+            for(int i = 0; i < min; i++)
             {
-                var file = new FileInfo(f);
-                
-                if(!filesRemote.Contains(f))
-                {
-                    new DirectoryInfo(MakeAbsolute(new FileInfo(f).DirectoryName, REMOTE_PATH)).Create();
-                    file.CopyTo(MakeAbsolute(f, REMOTE_PATH));
-                }
+                var entry = Entry.CompareFiles();
             }
         }
 
