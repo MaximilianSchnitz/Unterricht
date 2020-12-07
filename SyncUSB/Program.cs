@@ -46,16 +46,23 @@ namespace SyncUSB
 
         
 
-        static List<string> GetChangedFiles(List<string> localFiles, List<string> remoteFiles)
+        static List<Entry> GetChangedFiles(List<string> newFiles, List<string> oldFiles)
         {
             var changeList = new List<Entry>();
 
-            int min = Math.Min(localFiles.Count, remoteFiles.Count);
-            int max = Math.Max(localFiles.Count, remoteFiles.Count);
+            int min = Math.Min(newFiles.Count, oldFiles.Count);
+            int max = Math.Max(newFiles.Count, oldFiles.Count);
 
             for(int i = 0; i < min; i++)
             {
-                var entry = Entry.CompareFiles();
+                if(newFiles.Contains(oldFiles[i]))
+                {
+                    
+                }
+                else
+                {
+
+                }
             }
         }
 
