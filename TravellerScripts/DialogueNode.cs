@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TravellerScripts
 {
     class DialogueNode
     {
         private List<DialogueNode> nodes;
-        private bool available;
 
         public List<DialogueNode> Nodes { get => nodes; }
-        public bool Available { get => available; set => available = value; }
+        public bool Available { get; set; } = true;
 
         public string Message { get; set; }
+        public string Response { get; set; }
 
         public void Add(params DialogueNode[] dialogueNodes)
         {
@@ -23,8 +22,6 @@ namespace TravellerScripts
 
             nodes.AddRange(dialogueNodes);
         }
-
-        
 
     }
 }
