@@ -6,15 +6,14 @@ using System.Xml;
 
 namespace TravellerScripts
 {
-    abstract class Dialogue
+    class Dialogue
     {
         private DialogueNode startNode;
-
         public DialogueNode StartNode { get => startNode; }
 
         public int ID { get; set; }
 
-        public static void CreateFromFile(string path, int personId)
+        public void CreateFromFile(string path, int personId)
         {
             //Load Xml file
             var xmlDocument = new XmlDocument();
@@ -28,40 +27,84 @@ namespace TravellerScripts
                           where int.Parse(node.Attributes["id"].Value) == personId
                           select node).FirstOrDefault();
 
-            
-
-            //Loop through every Dialogue node
-            var running = true;
-
-            while(running)
-            {
-
-            }
+            startNode = CreateDialogueNodeTreeFromXml(person, 0);
         }
 
-        private DialogueNode CreateDialogueNodeTree(XmlNode dialogueNode)
+        private DialogueNode CreateDialogueNodeTreeFromXml(XmlNode personXmlNode, int currentDialogueXmlNode)
         {
-            var dialogue = new DialogueNode();
+            var dialogueNode = new DialogueNode();
 
-            //Gets child nodes from current dialogue node
-            //Index 0 is always the message, the remaining indicies are always responses
-            var childNodes = dialogueNode.ChildNodes;
+            //Gets child nodes from current person node
+            var dialogueXmlNodes = personXmlNode.ChildNodes;
 
-            var messageNode = childNodes.Item(0);
-            var responsesNode = childNodes.Item(1);
+            var dialogueXmlNode = dialogueXmlNodes[currentDialogueXmlNode];
 
-            int responseCount = responsesNode.ChildNodes.Count;
+            //Get message and responses nodes
+            var messageNode = dialogueXmlNode.ChildNodes.Item(0);
+            var responsesNode = dialogueXmlNode.ChildNodes.Item(1);
 
-            dialogue.Message = messageNode.Value;
+            //Array of all response nodes
+            var responseNodes = responsesNode.ChildNodes;
 
-            for (int j = 0; j < responseCount; j++)
+            //Amount of response options
+            int responseCount = responseNodes.Count;
+
+
+            //Set message
+            dialogueNode.Message = messageNode.InnerText.Trim();
+
+
+            //Loop through every response and set them
+            for (int i = 0; i < responseCount; i++)
             {
-                
+                int reference = int.Parse(responseNodes[i].Attributes["d_ref"].Value);
+                string response = responseNodes[i].InnerText;
+                if (response != null)
+                    response = response.Trim();
+                dialogueNode.Add(CreateDialogueNodeTreeFromXml(personXmlNode, reference), response);
             }
 
-
-            return dialogue;
+            return dialogueNode;
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //private DialogueNode CreateDialogueNodeTree(XmlNode dialogueNode)
+        //{
+        //    var dialogue = new DialogueNode();
+
+        //    //Gets child nodes from current dialogue node
+        //    //Index 0 is always the message, the remaining indicies are always responses
+        //    var childNodes = dialogueNode.ChildNodes;
+
+        //    //Get message and responses nodes
+        //    var messageNode = childNodes.Item(0);
+        //    var responsesNode = childNodes.Item(1);
+
+        //    //Amount of response options
+        //    int responseCount = responsesNode.ChildNodes.Count;
+
+        //    dialogue.Message = messageNode.Value;
+
+        //    for (int i = 0; i < responseCount; i++)
+        //    {
+        //        dialogue.Add(CreateDialogueNodeTree(responsesNode.ChildNodes[i]));
+        //    }
+
+        //    return dialogue;
+        //}
     }
 }

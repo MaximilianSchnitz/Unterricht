@@ -7,20 +7,17 @@ namespace TravellerScripts
 {
     class DialogueNode
     {
-        private List<DialogueNode> nodes;
-
-        public List<DialogueNode> Nodes { get => nodes; }
         public bool Available { get; set; } = true;
 
         public string Message { get; set; }
-        public string Response { get; set; }
 
-        public void Add(params DialogueNode[] dialogueNodes)
+        public List<DialogueNode> DialogueNodes { get; set; } = new List<DialogueNode>();
+        public List<string> Responses { get; set; } = new List<string>();
+
+        public void Add(DialogueNode dialogueNode, string response)
         {
-            if (nodes is null)
-                nodes = new List<DialogueNode>();
-
-            nodes.AddRange(dialogueNodes);
+            DialogueNodes.Add(dialogueNode);
+            Responses.Add(response);
         }
 
     }

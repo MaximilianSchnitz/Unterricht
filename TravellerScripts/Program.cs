@@ -9,28 +9,30 @@ namespace TravellerScripts
 {
     class Program
     {
-
-        
-
         static void Main(string[] args)
         {
-            ThreadPool.QueueUserWorkItem(Task1);
-            ThreadPool.QueueUserWorkItem(Task2);
+            var dialogue = new Dialogue();
+            dialogue.CreateFromFile("/home/felixwagner/Desktop/XmlTestFile.xml", 0);
 
-            Console.WriteLine("Main");
-
-            //Dialogue.CreateFromFile("C:/Users/felix/Desktop/New Text Document.xml", 0);
-            Console.ReadKey();
+            PrintDialogueNodes(dialogue.StartNode);
+            Console.WriteLine("Done!");
         }
 
-        private static void Task1(Object stateInfo)
+        static void PrintDialogueNodes(DialogueNode startNode)
         {
-            Console.WriteLine("Thread 1");
-        }
+            var dialogueNode = startNode;
 
-        private static void Task2(Object stateInfo)
-        {
-            Console.WriteLine("Thread 2");
+            Console.WriteLine($"Message: {dialogueNode.Message}");
+
+            var responses = dialogueNode.Responses;
+            if (responses != null)
+                foreach (string s in responses)
+                    Console.WriteLine($"Response: {s}");
+
+            for(int i = 0; i < dialogueNode.DialogueNodes.Count; i++)
+            {
+                PrintDialogueNodes(dialogueNode.DialogueNodes[i]);
+            }
         }
 
     }
