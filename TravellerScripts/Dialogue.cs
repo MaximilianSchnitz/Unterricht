@@ -9,11 +9,24 @@ namespace TravellerScripts
     class Dialogue
     {
         private DialogueNode startNode;
+        private DialogueNode currentNode;
+
         public DialogueNode StartNode { get => startNode; }
+        public DialogueNode CurrentNode { get => CurrentNode; }
 
-        public int ID { get; set; }
+        public DialogueNode Next(int option)
+        {
+            if (currentNode is null)
+                currentNode = startNode;
 
-        public void CreateFromFile(string path, int personId)
+            if (option >= currentNode.DialogueNodes.Count)
+                throw new DialogueException($"Response option {option} does not exist!");
+
+            currentNode = currentNode.DialogueNodes[option];
+            return currentNode;
+        }
+
+        public void CreateFromXml(string path, int personId)
         {
             //Load Xml file
             var xmlDocument = new XmlDocument();
@@ -57,10 +70,17 @@ namespace TravellerScripts
             //Loop through every response and set them
             for (int i = 0; i < responseCount; i++)
             {
+                //Dialogue reference id
                 int reference = int.Parse(responseNodes[i].Attributes["d_ref"].Value);
+
+                //Get response
                 string response = responseNodes[i].InnerText;
+
+                //If there is a response, remove whitespaces and the beginning and end
                 if (response != null)
                     response = response.Trim();
+
+                //Add response to dialogue node and use recursion to determine the nodes below
                 dialogueNode.Add(CreateDialogueNodeTreeFromXml(personXmlNode, reference), response);
             }
 

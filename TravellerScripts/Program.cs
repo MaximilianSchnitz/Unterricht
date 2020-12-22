@@ -12,10 +12,9 @@ namespace TravellerScripts
         static void Main(string[] args)
         {
             var dialogue = new Dialogue();
-            dialogue.CreateFromFile("/home/felixwagner/Desktop/XmlTestFile.xml", 0);
+            dialogue.CreateFromXml("/home/felixwagner/Desktop/XmlTestFile.xml", 0);
 
             PrintDialogueNodes(dialogue.StartNode);
-            Console.WriteLine("Done!");
         }
 
         static void PrintDialogueNodes(DialogueNode startNode)
