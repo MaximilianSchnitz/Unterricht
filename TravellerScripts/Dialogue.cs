@@ -66,45 +66,5 @@ namespace TravellerScripts
 
             return dialogueNode;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //private DialogueNode CreateDialogueNodeTree(XmlNode dialogueNode)
-        //{
-        //    var dialogue = new DialogueNode();
-
-        //    //Gets child nodes from current dialogue node
-        //    //Index 0 is always the message, the remaining indicies are always responses
-        //    var childNodes = dialogueNode.ChildNodes;
-
-        //    //Get message and responses nodes
-        //    var messageNode = childNodes.Item(0);
-        //    var responsesNode = childNodes.Item(1);
-
-        //    //Amount of response options
-        //    int responseCount = responsesNode.ChildNodes.Count;
-
-        //    dialogue.Message = messageNode.Value;
-
-        //    for (int i = 0; i < responseCount; i++)
-        //    {
-        //        dialogue.Add(CreateDialogueNodeTree(responsesNode.ChildNodes[i]));
-        //    }
-
-        //    return dialogue;
-        //}
     }
 }
