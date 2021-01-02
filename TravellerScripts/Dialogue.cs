@@ -14,11 +14,18 @@ namespace TravellerScripts
         public DialogueNode StartNode { get => startNode; }
         public DialogueNode CurrentNode { get => CurrentNode; }
 
+        /// <summary>
+        /// Moves to the next dialogue node at the specified position at returns the node. Starts at position -1.
+        /// </summary>
+        /// <param name="option"></param>
+        /// <returns></returns>
         public DialogueNode Next(int option)
         {
+            //On first call set current node to start node
             if (currentNode is null)
                 currentNode = startNode;
 
+            //Throws exception if an option is chosen that doesn't exist
             if (option >= currentNode.DialogueNodes.Count)
                 throw new DialogueException($"Response option {option} does not exist!");
 
@@ -26,6 +33,11 @@ namespace TravellerScripts
             return currentNode;
         }
 
+        /// <summary>
+        /// Creates a dialogue tree from an XML file.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="personId"></param>
         public void CreateFromXml(string path, int personId)
         {
             //Load Xml file
